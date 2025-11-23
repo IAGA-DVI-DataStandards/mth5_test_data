@@ -25,7 +25,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = []
 
 [project.urls]
@@ -38,26 +38,27 @@ include = ["mth5_test_data*"]
 
 [tool.setuptools.package-data]
 "mth5_test_data" = [
-    # XML metadata files from MANIFEST.in
+    # XML metadata files
     "florida_xml_metadata_files/*.xml",
     "metadata_files/*.xml",
     "iris/**/*.xml",
     "stationxml/*.xml",
-    # Zip archives from MANIFEST.in  
+    # Zip archives ONLY - do not include their extracted contents
     "metronix/*.zip",
     "miniseed/*.zip",
     "nims/*.zip",
     "phoenix/*.zip",
     "zen/*.zip",
     "usgs_ascii/*.zip",
-    # Additional data files
-    "**/*.h5", 
-    "**/*.hdf5",
-    "**/*.txt", 
-    "**/*.dat",
-    "**/*.bin",
-    "**/*.json",
-    "**/*.csv",
+    # Standalone data files (not in zip archives)
+    "mth5/**/*.h5", 
+    "mth5/**/*.hdf5",
+    "mth5/**/*.json",
+    "calibration_files/**/*.txt",
+    "calibration_files/**/*.json",
+    "calibration_files/**/*.csv",
+    # Standalone nims binary files (not in zip)
+    "nims/*.BIN",
 ]
 
 # Include root-level files from MANIFEST.in
