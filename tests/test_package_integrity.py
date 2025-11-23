@@ -28,6 +28,9 @@ class TestPackageIntegrity:
 
         NOTE: This test MUST run first (hence test_1_ prefix) before any other
         tests call get_test_data_path(), which extracts zips to the package directory.
+
+        For editable installs, we clean up any previously extracted directories first,
+        as they may have been left over from previous test runs or manual extractions.
         """
         # These directories should NOT exist as they're inside zip files
         forbidden_dirs = [
@@ -35,7 +38,20 @@ class TestPackageIntegrity:
             package_root / "phoenix" / "sample_data",
         ]
 
+        # For editable installs, clean up any extracted directories from previous runs
+        import sys
+
+        is_editable = any(
+            str(package_root) in p for p in sys.path if "site-packages" not in p
+        )
+
         for forbidden_dir in forbidden_dirs:
+            if forbidden_dir.exists() and is_editable:
+                # Clean up extracted directory from previous test run
+                import shutil
+
+                shutil.rmtree(forbidden_dir)
+
             assert not forbidden_dir.exists(), (
                 f"Duplicate directory found: {forbidden_dir.relative_to(package_root)}. "
                 f"This directory should only exist inside the zip file, not as extracted content."
