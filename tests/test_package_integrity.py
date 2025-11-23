@@ -23,6 +23,24 @@ class TestPackageIntegrity:
 
         return Path(mth5_test_data.__file__).parent
 
+    def test_1_no_duplicate_extracted_directories(self, package_root):
+        """Verify no extracted directories exist that would duplicate zip contents.
+
+        NOTE: This test MUST run first (hence test_1_ prefix) before any other
+        tests call get_test_data_path(), which extracts zips to the package directory.
+        """
+        # These directories should NOT exist as they're inside zip files
+        forbidden_dirs = [
+            package_root / "metronix" / "Northern_Mining",
+            package_root / "phoenix" / "sample_data",
+        ]
+
+        for forbidden_dir in forbidden_dirs:
+            assert not forbidden_dir.exists(), (
+                f"Duplicate directory found: {forbidden_dir.relative_to(package_root)}. "
+                f"This directory should only exist inside the zip file, not as extracted content."
+            )
+
     def test_all_zip_files_present(self, package_root):
         """Verify all expected zip files are present in the package."""
         expected_zips = {
@@ -41,20 +59,6 @@ class TestPackageIntegrity:
 
             # Verify it's a valid zip file
             assert zipfile.is_zipfile(full_path), f"Not a valid zip: {zip_path}"
-
-    def test_no_duplicate_extracted_directories(self, package_root):
-        """Verify no extracted directories exist that would duplicate zip contents."""
-        # These directories should NOT exist as they're inside zip files
-        forbidden_dirs = [
-            package_root / "metronix" / "Northern_Mining",
-            package_root / "phoenix" / "sample_data",
-        ]
-
-        for forbidden_dir in forbidden_dirs:
-            assert not forbidden_dir.exists(), (
-                f"Duplicate directory found: {forbidden_dir.relative_to(package_root)}. "
-                f"This directory should only exist inside the zip file, not as extracted content."
-            )
 
     @pytest.mark.parametrize(
         "instrument",
