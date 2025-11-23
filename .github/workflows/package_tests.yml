@@ -1,0 +1,85 @@
+name: Package Integrity Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  test-package-installation:
+    name: Test Package Installation on ${{ matrix.os }} - Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install package from repository
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+    
+    - name: Install test dependencies
+      run: |
+        pip install pytest pytest-cov
+    
+    - name: Run package integrity tests
+      run: |
+        pytest tests/test_package_integrity.py -v --tb=short
+    
+    - name: Verify package size (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        pip install build
+        python -m build --wheel
+        WHEEL_SIZE=$(ls -l dist/*.whl | awk '{print $5}')
+        echo "Wheel size: $WHEEL_SIZE bytes"
+        # Warn if wheel is larger than expected (>300MB suggests duplicates)
+        if [ $WHEEL_SIZE -gt 314572800 ]; then
+          echo "::warning::Wheel size ($WHEEL_SIZE bytes) exceeds 300MB - possible duplicate content"
+        fi
+    
+    - name: Verify package size (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        pip install build
+        python -m build --wheel
+        $wheelFile = Get-Item dist\*.whl
+        $wheelSize = $wheelFile.Length
+        Write-Output "Wheel size: $wheelSize bytes"
+        if ($wheelSize -gt 314572800) {
+          Write-Output "::warning::Wheel size ($wheelSize bytes) exceeds 300MB - possible duplicate content"
+        }
+      shell: pwsh
+    
+    - name: Test installation from wheel
+      run: |
+        pip uninstall -y mth5_test_data
+        pip install dist/*.whl
+        pytest tests/test_package_integrity.py -v --tb=short
+    
+    - name: Generate coverage report
+      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+      run: |
+        pytest tests/test_package_integrity.py --cov=mth5_test_data --cov-report=xml --cov-report=term
+    
+    - name: Upload coverage to Codecov
+      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        flags: package-integrity
+        name: package-integrity-tests
+        fail_ci_if_error: false
