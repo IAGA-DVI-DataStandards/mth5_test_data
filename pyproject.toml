@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mth5_test_data"
-version = "0.0.1"
+version = "0.0.2"
 description = "A place to keep data samples used in testing mth5 to avoid bloat during development"
 readme = "README.rst"
 authors = [

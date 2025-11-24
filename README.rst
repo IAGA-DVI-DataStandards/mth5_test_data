@@ -1,4 +1,4 @@
-An repository for testing data used in the MTH5 project.
+A repository for testing data used in the MTH5 project.
 
 Includes:
 
