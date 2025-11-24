@@ -73,6 +73,9 @@ def unzip_file(
     """
     Unzip a zip file to a specified directory.
 
+    Handles race conditions in parallel test execution by catching FileExistsError
+    when directories already exist from concurrent extraction attempts.
+
     Parameters
     ----------
     zip_path : str or pathlib.Path
@@ -85,6 +88,7 @@ def unzip_file(
     pathlib.Path
         Path to the directory where files were extracted.
     """
+    import os
 
     if extract_to is None:
         extract_to = pathlib.Path(zip_path).parent
@@ -92,7 +96,17 @@ def unzip_file(
         extract_to = pathlib.Path(extract_to)
 
     with zipfile.ZipFile(zip_path, "r") as zip_ref:
-        zip_ref.extractall(extract_to)
+        for member in zip_ref.namelist():
+            try:
+                zip_ref.extract(member, extract_to)
+            except FileExistsError:
+                # File/directory already exists from parallel extraction, skip it
+                pass
+            except OSError as e:
+                # Handle race condition where directory is created between
+                # existence check and mkdir() call (errno 17 = File exists)
+                if e.errno != 17:  # EEXIST
+                    raise
 
     return extract_to
 
