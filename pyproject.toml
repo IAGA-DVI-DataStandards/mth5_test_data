@@ -48,6 +48,7 @@ include = ["mth5_test_data*"]
     "miniseed/*.zip",
     "nims/*.zip",
     "phoenix/*.zip",
+    "phoenix_mtu/*.zip",
     "zen/*.zip",
     "usgs_ascii/*.zip",
     # Standalone data files (not in zip archives)
