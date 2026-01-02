@@ -57,6 +57,7 @@ class TestPackageIntegrity:
         expected_zips = {
             "metronix/metronix_test_data.zip",
             "phoenix/phoenix_test_data.zip",
+            "phoenix_mtu/phoenix_mtu_test_data.zip",
             "usgs_ascii/usgs_ascii_test_data.zip",
             "nims/nims_test_data.zip",
             "zen/zen_test_data.zip",
@@ -76,6 +77,7 @@ class TestPackageIntegrity:
         [
             "metronix",
             "phoenix",
+            "phoenix_mtu",
             "usgs_ascii",
             "nims",
             "zen",
@@ -127,6 +129,18 @@ class TestPackageIntegrity:
         # Check for expected config files
         json_files = list(sample_data.rglob("*.json"))
         assert len(json_files) > 0, "No .json files found in phoenix sample_data"
+
+    def test_phoenix_mtu_extracted_structure(self):
+        """Verify phoenix_mtu data extracts correctly with expected TBL file."""
+        data_path = get_test_data_path("phoenix_mtu")
+
+        # Check for expected TBL file
+        tbl_file = data_path / "1690C16C.TBL"
+        assert tbl_file.exists(), "1690C16C.TBL file not found after extraction"
+        assert tbl_file.is_file(), "1690C16C.TBL is not a file"
+
+        # Verify it's a valid TBL file (at least 25 bytes for one block)
+        assert tbl_file.stat().st_size >= 25, "TBL file is too small to be valid"
 
     def test_standalone_files_present(self, package_root):
         """Verify standalone files (not in zips) are present."""

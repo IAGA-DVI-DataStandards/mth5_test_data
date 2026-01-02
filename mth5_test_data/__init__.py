@@ -17,6 +17,7 @@ MTH5_TEST_DATA_DIR = pathlib.Path(init_file).parent
 NIMS_TEST_DATA_DIR = MTH5_TEST_DATA_DIR / "nims"
 ZEN_TEST_DATA_DIR = MTH5_TEST_DATA_DIR / "zen"
 PHOENIX_TEST_DATA_DIR = MTH5_TEST_DATA_DIR / "phoenix"
+PHOENIX_MTU_TEST_DATA_DIR = MTH5_TEST_DATA_DIR / "phoenix_mtu"
 METRONIX_TEST_DATA_DIR = MTH5_TEST_DATA_DIR / "metronix"
 ASCII_TEST_DATA_DIR = MTH5_TEST_DATA_DIR / "usgs_ascii"
 
@@ -25,6 +26,7 @@ __all__ = [
     "NIMS_TEST_DATA_DIR",
     "ZEN_TEST_DATA_DIR",
     "PHOENIX_TEST_DATA_DIR",
+    "PHOENIX_MTU_TEST_DATA_DIR",
     "METRONIX_TEST_DATA_DIR",
     "ASCII_TEST_DATA_DIR",
 ]
@@ -35,6 +37,7 @@ DATA_PATH_DICT = {
     "phoenix": PHOENIX_TEST_DATA_DIR,
     "metronix": METRONIX_TEST_DATA_DIR,
     "usgs_ascii": ASCII_TEST_DATA_DIR,
+    "phoenix_mtu": PHOENIX_MTU_TEST_DATA_DIR,
 }
 
 
@@ -45,7 +48,7 @@ def get_zip_file(instrument: str) -> pathlib.Path:
     Parameters
     ----------
     instrument : str
-        Name of the instrument (e.g., 'nims', 'zen', 'phoenix', 'metronix').
+        Name of the instrument (e.g., 'nims', 'zen', 'phoenix', 'metronix', 'phoenix_mtu').
 
     Returns
     -------
