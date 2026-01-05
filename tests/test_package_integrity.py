@@ -62,6 +62,7 @@ class TestPackageIntegrity:
             "nims/nims_test_data.zip",
             "zen/zen_test_data.zip",
             "miniseed/test_stream.zip",
+            "lemi/lemi_test_data.zip",
         }
 
         for zip_path in expected_zips:
@@ -81,6 +82,7 @@ class TestPackageIntegrity:
             "usgs_ascii",
             "nims",
             "zen",
+            "lemi",
         ],
     )
     def test_zip_extraction_succeeds(self, instrument, tmp_path):
