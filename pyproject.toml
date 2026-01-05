@@ -50,6 +50,7 @@ include = ["mth5_test_data*"]
     "phoenix/*.zip",
     "phoenix_mtu/*.zip",
     "zen/*.zip",
+    "lemi/*.zip",
     "usgs_ascii/*.zip",
     # Standalone data files (not in zip archives)
     "mth5/**/*.h5", 
