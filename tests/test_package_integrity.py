@@ -61,7 +61,7 @@ class TestPackageIntegrity:
             "usgs_ascii/usgs_ascii_test_data.zip",
             "nims/nims_test_data.zip",
             "zen/zen_test_data.zip",
-            "miniseed/test_stream.zip",
+            "miniseed/miniseed_test_data.zip",
             "lemi/lemi_test_data.zip",
         }
 
